@@ -1,0 +1,19 @@
+{
+  "org": "karpathy",
+  "repo": "nanochat",
+  "source": "github",
+  "sourcePath": "karpathy/nanochat",
+  "docType": "functional",
+  "commitHash": "c7ba25214276d165eeefca7cb2060587975db189",
+  "branch": "master",
+  "languages": [
+    {
+      "name": "Python",
+      "percentage": 100,
+      "fileCount": 35
+    }
+  ],
+  "fileCount": 50,
+  "createdAt": "1771868530",
+  "updatedAt": "1771868815"
+}

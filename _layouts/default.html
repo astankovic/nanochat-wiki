@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} — nanochat Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/github-dark.min.css">
+    <style>
+        :root {
+            --bg: #ffffff; --fg: #111827; --muted: #f9fafb; --muted-fg: #6b7280;
+            --border: #e5e7eb; --card: #ffffff; --primary: #2563eb; --primary-fg: #ffffff;
+            --sidebar-bg: #ffffff; --sidebar-hover: #f3f4f6; --sidebar-active: #f0f0f0;
+            --header-bg: #ffffff; --header-border: #e5e7eb; --code-bg: #f6f8fa;
+        }
+        .dark {
+            --bg: #0f1117; --fg: #e5e7eb; --muted: #1a1d27; --muted-fg: #9ca3af;
+            --border: #2d3139; --card: #161922; --primary: #3b82f6; --primary-fg: #ffffff;
+            --sidebar-bg: #0f1117; --sidebar-hover: #1a1d27; --sidebar-active: #1e2230;
+            --header-bg: #131620; --header-border: #2d3139; --code-bg: #161b22;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--fg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            position: sticky; top: 0; z-index: 50; height: 48px;
+            border-bottom: 1px solid var(--header-border);
+            background: var(--header-bg); display: flex; align-items: center; padding: 0 16px;
+        }
+        .header a { color: var(--fg); text-decoration: none; }
+        .header-logo { font-weight: 700; font-size: 16px; }
+        .header-repo { font-size: 15px; color: var(--muted-fg); margin-left: 8px; }
+        .header-repo:hover { color: var(--fg); }
+        .header-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+        .theme-btn {
+            background: none; border: none; cursor: pointer; padding: 6px;
+            border-radius: 6px; color: var(--muted-fg); display: flex;
+        }
+        .theme-btn:hover { background: var(--muted); }
+        .menu-btn {
+            background: none; border: none; cursor: pointer; padding: 4px;
+            border-radius: 6px; color: var(--muted-fg); display: none;
+        }
+        @media (max-width: 1023px) { .menu-btn { display: flex; margin-right: 8px; } }
+
+        .layout { display: flex; max-width: 1400px; margin: 0 auto; }
+
+        .sidebar {
+            width: 260px; position: sticky; top: 48px; height: calc(100vh - 48px);
+            overflow-y: auto; padding: 16px 8px 16px; flex-shrink: 0;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-meta { padding: 0 12px 8px; font-size: 12px; color: var(--muted-fg); }
+        .nav-item {
+            display: block; padding: 7px 12px; font-size: 14px; border-radius: 6px;
+            color: var(--fg); text-decoration: none; margin-bottom: 2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .nav-item:hover { background: var(--sidebar-hover); }
+        .nav-item.active { background: var(--sidebar-active); font-weight: 500; }
+        .nav-child { padding-left: 24px; font-size: 13px; color: var(--muted-fg); }
+        .nav-child:hover { color: var(--fg); }
+        .nav-child.active { color: var(--fg); }
+        @media (max-width: 1023px) {
+            .sidebar {
+                position: fixed; left: 0; top: 48px; z-index: 40;
+                background: var(--bg); transform: translateX(-100%);
+                transition: transform 0.2s; border-right: 1px solid var(--border);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay {
+                display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 39;
+            }
+            .sidebar-overlay.open { display: block; }
+        }
+
+        .main { flex: 1; min-width: 0; padding: 32px 24px 64px; }
+        @media (min-width: 1024px) { .main { padding: 32px 48px 64px; } }
+        .article { max-width: 800px; margin: 0 auto; }
+
+        .content { line-height: 1.7; font-size: 15px; }
+        .content h1 { font-size: 30px; font-weight: 700; margin: 2rem 0 1rem; }
+        .content h2 {
+            font-size: 20px; font-weight: 600; margin: 2rem 0 1rem;
+            padding-bottom: 8px; border-bottom: 1px solid var(--border);
+        }
+        .content h3 { font-size: 18px; font-weight: 600; margin: 1.5rem 0 0.75rem; }
+        .content h4 { font-size: 16px; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+        .content p { margin: 0.75rem 0; }
+        .content a { color: var(--primary); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        .content strong { color: var(--fg); font-weight: 600; }
+        .content ul, .content ol { padding-left: 1.5rem; margin: 0.75rem 0; }
+        .content li { margin: 0.25rem 0; }
+        .content li > ul, .content li > ol { margin: 0.25rem 0; }
+        .content code {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 13px; background: var(--muted); padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .content pre {
+            background: var(--code-bg); border: 1px solid var(--border);
+            border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 1rem 0;
+            position: relative;
+        }
+        .content pre code { background: none; padding: 0; font-size: 13px; border-radius: 0; }
+        .content blockquote {
+            border-left: 3px solid var(--primary); padding: 8px 16px;
+            margin: 1rem 0; background: color-mix(in srgb, var(--muted) 30%, transparent);
+        }
+        .content blockquote p { margin: 0.25rem 0; }
+        .content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 14px; }
+        .content th {
+            background: var(--muted); padding: 8px 12px; text-align: left;
+            font-weight: 500; border: 1px solid var(--border); font-size: 13px;
+        }
+        .content td { padding: 8px 12px; border: 1px solid var(--border); font-size: 13px; }
+        .content img { border-radius: 8px; max-width: 100%; }
+        .content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+        .copy-btn {
+            position: absolute; top: 8px; right: 8px; padding: 4px 8px;
+            font-size: 12px; border-radius: 4px; border: none; cursor: pointer;
+            background: var(--muted); color: var(--muted-fg); opacity: 0;
+            transition: opacity 0.15s;
+        }
+        pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { color: var(--fg); }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted-fg); }
+        ::selection { background: rgba(37, 99, 235, 0.2); }
+
+        .generated-badge {
+            text-align: center; padding: 24px 0; margin-top: 48px;
+            border-top: 1px solid var(--border); font-size: 12px; color: var(--muted-fg);
+        }
+        .generated-badge a { color: var(--primary); text-decoration: none; }
+        .generated-badge a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <a href="{{ site.baseurl }}/" class="header-logo">ESX Wiki</a>
+        <a href="{{ site.baseurl }}/" class="header-repo">karpathy/nanochat</a>
+        <div class="header-right">
+            <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+                <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('open')"></div>
+
+    <div class="layout">
+        <nav class="sidebar">
+            <div class="sidebar-meta">Guide for karpathy/nanochat</div>
+            <a href="{{ site.baseurl }}/1-overview" class="nav-item" data-slug="overview">Overview</a>
+        <a href="{{ site.baseurl }}/2-getting-started" class="nav-item" data-slug="getting-started">Getting Started</a>
+        <a href="{{ site.baseurl }}/2.1-installation-and-environment-setup" class="nav-item nav-child" data-slug="installation-and-environment-setup">Installation and Environment Setup</a>
+        <a href="{{ site.baseurl }}/2.2-reproducing-gpt-2-capability-model" class="nav-item nav-child" data-slug="reproducing-gpt-2-capability-model">Reproducing GPT-2 Capability Model</a>
+        <a href="{{ site.baseurl }}/2.3-running-on-cpu-or-single-gpu" class="nav-item nav-child" data-slug="running-on-cpu-or-single-gpu">Running on CPU or Single GPU</a>
+        <a href="{{ site.baseurl }}/3-training-base-models" class="nav-item" data-slug="training-base-models">Training Base Models</a>
+        <a href="{{ site.baseurl }}/3.1-configuring-model-size-and-training-horizon" class="nav-item nav-child" data-slug="configuring-model-size-and-training-horizon">Configuring Model Size and Training Horizon</a>
+        <a href="{{ site.baseurl }}/3.2-monitoring-and-checkpoints" class="nav-item nav-child" data-slug="monitoring-and-checkpoints">Monitoring and Checkpoints</a>
+        <a href="{{ site.baseurl }}/4-tokenizer-training-and-evaluation" class="nav-item" data-slug="tokenizer-training-and-evaluation">Tokenizer Training and Evaluation</a>
+        <a href="{{ site.baseurl }}/5-training-chat-models" class="nav-item" data-slug="training-chat-models">Training Chat Models</a>
+        <a href="{{ site.baseurl }}/5.1-supervised-finetuning-sft" class="nav-item nav-child" data-slug="supervised-finetuning-sft">Supervised Finetuning (SFT)</a>
+        <a href="{{ site.baseurl }}/6-model-evaluation" class="nav-item" data-slug="model-evaluation">Model Evaluation</a>
+        <a href="{{ site.baseurl }}/6.1-base-model-evaluation" class="nav-item nav-child" data-slug="base-model-evaluation">Base Model Evaluation</a>
+        <a href="{{ site.baseurl }}/6.2-chat-model-evaluation" class="nav-item nav-child" data-slug="chat-model-evaluation">Chat Model Evaluation</a>
+        <a href="{{ site.baseurl }}/7-chatting-with-models" class="nav-item" data-slug="chatting-with-models">Chatting with Models</a>
+        <a href="{{ site.baseurl }}/7.1-web-chat-ui" class="nav-item nav-child" data-slug="web-chat-ui">Web Chat UI</a>
+        <a href="{{ site.baseurl }}/7.2-cli-chat" class="nav-item nav-child" data-slug="cli-chat">CLI Chat</a>
+        <a href="{{ site.baseurl }}/8-advanced-workflows" class="nav-item" data-slug="advanced-workflows">Advanced Workflows</a>
+        <a href="{{ site.baseurl }}/9-configuration-reference" class="nav-item" data-slug="configuration-reference">Configuration Reference</a>
+        <a href="{{ site.baseurl }}/9.1-hardware-and-precision-options" class="nav-item nav-child" data-slug="hardware-and-precision-options">Hardware and Precision Options</a>
+        <a href="{{ site.baseurl }}/10-leaderboard-and-optimization" class="nav-item" data-slug="leaderboard-and-optimization">Leaderboard and Optimization</a>
+        </nav>
+
+        <main class="main">
+            <div class="article">
+                <div class="content">
+                    {{ content }}
+                </div>
+                <div class="generated-badge">
+                    Generated by <a href="https://github.com/andrijastankovic/esx-wiki">ESX Wiki</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.querySelectorAll('pre').forEach(function(b) {
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn'; btn.textContent = 'Copy';
+            btn.onclick = function() {
+                navigator.clipboard.writeText((b.querySelector('code')||b).textContent);
+                btn.textContent = 'Copied!';
+                setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+            };
+            b.appendChild(btn);
+        });
+        var path = location.pathname.replace(/\/$/, '');
+        var slug = path.split('/').pop();
+        document.querySelectorAll('.nav-item').forEach(function(a) {
+            var href = a.getAttribute('href').replace(/\/$/, '');
+            if (href.split('/').pop() === slug) a.classList.add('active');
+        });
+        (function() {
+            var t = localStorage.getItem('theme') ||
+                (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark', t === 'dark');
+            updateIcons(t);
+        })();
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateIcons(isDark ? 'dark' : 'light');
+        }
+        function updateIcons(t) {
+            document.querySelector('.sun-icon').style.display = t === 'dark' ? 'block' : 'none';
+            document.querySelector('.moon-icon').style.display = t === 'dark' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>
